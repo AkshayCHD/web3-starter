@@ -1,0 +1,61 @@
+/* Styles go here */
+*{
+    margin:0;
+    padding:0;
+    font-family: Helvetica;
+}
+
+div{
+    box-sizing: border-box;
+}
+#header{
+    height:10vh;
+    width:100vw;
+    box-sizing: border-box;
+    padding:0.8rem;
+    background: #000000;
+    color:white;
+    font-weight: bold;
+    font-size: 25px;
+}
+label,span{
+    font-weight: bold;
+}
+
+.candidateBlock , #candF ,#results{
+    padding:0.8rem;
+}
+.candidateBlock{
+    margin:5px;
+    background: rgb(52, 197, 241);
+    border-radius: 5px;
+}
+
+.main{
+    height: 90vh;
+    width: 100vw;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    padding:0rem;
+}
+
+.adminD{
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    text-align: center;
+}
+
+button,input{
+    padding:8px 16px 8px 16px;
+    border:1px solid black;
+    cursor: pointer;
+    border-radius: 5px;
+}
+input{
+
+}
+
+.voterD{
+    height:90vh;
+    overflow-y: scroll;
+}
