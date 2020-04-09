@@ -1,28 +1,39 @@
-import React, { useEffect, useState } from 'react'
-import { getAccountInformation, getContractInstance } from '../utils/getWeb3' 
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import '../App.css';
+import { connect } from 'react-redux';
 
-const Header = () => {
-	const [account, setAccount] = useState('')
-	const [evmContract, setEvmContract] = useState({})
+interface IProps {
+	account: any;
+	contract: any;
+}
 
+const Header = (props: IProps) => {
+	const [adminAddress, setAdminAddress] = useState('');
 	useEffect(() => {
-		getAccountInformation().then((account) => {
-			if(!account) {
-				throw new Error("bad thing happened")
-			}
-			setAccount(account)
-		});
-		getContractInstance().then((evmContract) => {
-			if(!evmContract) {
-				throw new Error("bad thing happened")
-			}
-			setEvmContract(evmContract)
-		});
-	}, [])
+		if(props.contract.methods !== undefined) {
+			props.contract.methods.admin().call((error, result) => {
+				setAdminAddress(result.toString())
+			});
+		}
+	}, [props.contract])
 
-  return <div id="header">
-		<span id="address">Address: {account}</span>
+  return <div>
+		<div id="header">
+			<span id="account">Current Account Address: {props.account}</span>	
+		</div>
+		<div id="header">
+			<span id="admin">Contract Admin Address: {adminAddress}</span>
+		</div>
+		<div id="header">
+			<span id="contract">Contract Address: {(props.contract.options) ? props.contract.options.address : "asdsd"}</span>
+		</div>
 	</div>
 }
-export { Header }
+
+const mapStateToProps = (state: State) => {
+	return {
+		contract: state.contract,
+		account: state.account
+	}
+}
+export default connect(mapStateToProps, null)(Header)

@@ -1,21 +1,4 @@
 import Web3 from 'web3';
-import EVMContract from '../abis/EVMContract.json'
-declare global {
-  interface Window {
-    ethereum: any;
-    web3: any;
-  }
-}
-
-interface Network {
-	events: object,
-	links: object,
-	address: string,
-	transactionHash: string
-}
-interface Networks {
-	[key: string]: Network;
-}
 
 const loadWeb3 = async () => {
 	try { 
@@ -30,6 +13,9 @@ const loadWeb3 = async () => {
 		else {
 			window.alert('Metamask is not installed.');
 		}
+		window.ethereum.on('accountsChanged', async function (accounts: [String]) {
+			await loadWeb3()
+		})
 	} catch(error){
 		console.log("error in loadWeb3",error);
 	}
@@ -53,16 +39,16 @@ const getAccountInformation = async () : Promise<string | undefined> => {
 	}
 }
 
-const getContractInstance = async () : Promise<object | undefined> => {
+const loadContractInstance = async (Contract: Contract) : Promise<object | undefined> => {
   try {
     const web3 = window.web3
     const networkId = await web3.eth.net.getId();
-		const networks: Networks = EVMContract.networks;
-		const networkData = networks[networkId];
-		if (networkData) {
-			const evmContract = new web3.eth.Contract(EVMContract.abi, networkData.address)
-      console.log(evmContract);
-      return evmContract
+	  const networks: Networks = Contract.networks;
+	  const networkData = networks[networkId];
+	  if (networkData) {
+	    const contract = new web3.eth.Contract(Contract.abi, networkData.address)
+      console.log(contract);
+      return contract
 		} else {
 			alert("Sorry you are on wrong network");
 		}
@@ -71,4 +57,4 @@ const getContractInstance = async () : Promise<object | undefined> => {
   }
 }
 
-export { loadWeb3, getAccountInformation, getContractInstance}
+export { loadWeb3, getAccountInformation, loadContractInstance }
