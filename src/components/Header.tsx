@@ -11,7 +11,7 @@ const Header = (props: IProps) => {
 	const [adminAddress, setAdminAddress] = useState('');
 	useEffect(() => {
 		if(props.contract.methods !== undefined) {
-			props.contract.methods.admin().call((error, result) => {
+			props.contract.methods.admin().call((error: any, result: any) => {
 				setAdminAddress(result.toString())
 			});
 		}

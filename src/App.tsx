@@ -15,32 +15,43 @@ interface IState {
 }
 
 class App extends Component<IProps, IState> {
+  state = {
+    error: null
+  }
   async componentDidMount() {
     await this.refreshWeb3()
-    window.ethereum.on('accountsChanged', async () => {
-      await this.refreshWeb3()
-      alert('Account Changed')
-    })
   }
 
   async refreshWeb3() {
-    await loadWeb3();
-    const account = await getAccountInformation();
-    if(account !== undefined) {
-      this.props.setAccountAddress(account);
-    }
-    const evmContract = await loadContractInstance(EVMContract);
-    if(evmContract !== undefined) {
-      this.props.setContractInstance(evmContract);
+    try {
+      await loadWeb3();
+      const account = await getAccountInformation();
+      if(account !== undefined) {
+        this.props.setAccountAddress(account);
+      }
+      const evmContract = await loadContractInstance(EVMContract);
+      if(evmContract !== undefined) {
+        this.props.setContractInstance(evmContract);
+      }
+      window.ethereum.on('accountsChanged', async () => {
+        await this.refreshWeb3()
+        alert('Account Changed')
+      })
+    } catch(error) {
+      this.setState({ error: error.toString() })
     }
   }
 
   render() {
-    return (
-      <div className="App">
-        <Header account="" contract={null} />
-      </div>
-    );
+    if(this.state.error) {
+      return <h1>{this.state.error}</h1>
+    } else {
+      return (
+        <div className="App">
+          <Header account="" contract={null} />
+        </div>
+      );
+    }
   }
 }
 
