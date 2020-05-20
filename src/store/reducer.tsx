@@ -1,28 +1,28 @@
-const initalState = {
+import { Contract } from 'ethers';
+
+const initialState = {
     account: '',
     contract: {}
 }
 
-interface Action {
-    type: String;
-    contract: Object;
-    account: String;
+export interface StateInterface {
+	account: String;
+	contract: Contract;
 }
+
 // takes the action and current state as argument and returns the updated state
-const rootReducer = (state = initalState, action: Action) => {
+const rootReducer = (state = initialState, action: any) => {
 	switch(action.type) {
 		case 'SET_ACCOUNT':
 			return {
 				...state,
 				account: action.account
 			}
-		break;
 		case 'SET_CONTRACT':
 			return {
 				...state,
 				contract: action.contract
 			}
-		break;
 	}
   return state;
 };

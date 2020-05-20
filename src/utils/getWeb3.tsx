@@ -1,4 +1,6 @@
 import Web3 from 'web3';
+import { ethers } from 'ethers';
+import { Contract } from 'ethers';
 
 const loadWeb3 = async () => {
   if (window.ethereum) {
@@ -24,19 +26,17 @@ const getAccountInformation = async () : Promise<string | undefined> => {
   return account;
 }
 
-const loadContractInstance = async (Contract: Contract) : Promise<object | undefined> => {
-  const web3 = window.web3
-  console.log(web3.eth.net)
-  const networkId = await web3.eth.net.getId();
-  const networks: Networks = Contract.networks;
-  const networkData = networks[networkId];
-  if (networkData) {
-    const contract = new web3.eth.Contract(Contract.abi, networkData.address)
-    console.log(contract);
-    return contract
-  } else {
-    throw new Error("Wrong Network Selected")
-  }
+const loadContractInstance = async (abi: string, address: string) : Promise<Contract | undefined> => {
+	try {
+		const web3 = window.web3
+		let provider = new ethers.providers.Web3Provider(web3.currentProvider);
+		let contract = new ethers.Contract(address, abi, provider);
+		const status = await contract.deployed()
+		console.log(status)
+		return contract;
+	} catch(error) {
+		throw new Error("Contract not found at given address")
+	}
 }
 
 export { loadWeb3, getAccountInformation, loadContractInstance }
